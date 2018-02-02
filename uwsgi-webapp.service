@@ -1,0 +1,8 @@
+[Unit]
+Description=uWSGI service for webapp
+
+[Service]
+ExecStart=/bin/bash -c 'source /usr/share/nginx/html/site/bin/activate; DJANGO_SETTINGS_MODULE=DrProject.settings; uwsgi --ini /usr/share/nginx/html/site/webapp/uwsgi.ini'
+
+[Install]
+WantedBy=multi-user.target

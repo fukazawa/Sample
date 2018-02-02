@@ -1,0 +1,81 @@
+#Python3.6
+sudo yum install -y https://centos7.iuscommunity.org/ius-release.rpm
+sudo yum install python36u python36u-libs python36u-devel python36u-pip
+sudo yum install gcc zip
+
+#Nginx
+sudo yum install http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+sudo yum install --enablerepo=nginx nginx
+sudo systemctl enable nginx
+
+sudo systemctl start nginx
+sudo systemctl reload nginx
+sudo systemctl stop nginx
+
+
+#venv
+sudo python3.6 -m venv /usr/share/nginx/html/site
+sudo mkdir /usr/share/nginx/html/site/webapp
+sudo chmod -R 755 /usr/share/nginx/html/site/webapp
+cd /usr/share/nginx/html/site/bin
+. activate
+cd /usr/share/nginx/html/site
+
+#パッケージ
+pip install django
+pip install uwsgi
+
+#django
+cd /usr/share/nginx/html/site/webapp
+django-admin startproject DrProject
+python manage.py startapp polls
+mkdir /usr/share/nginx/html/site/webapp/static
+
+
+#uWSGI 
+sudo mkdir -p /var/run/uwsgi.webapppackage
+sudo chmod -R 777 /var/run/uwsgi.webapppackage
+cd /usr/share/nginx/html/site/webapp
+sudo touch uwsgi.ini
+sudo touch uwsgi-webapp.service
+sudo chmod -R 755 /usr/share/nginx/html/site/webapp
+@ファイル記述
+	uwsgi.ini
+	uwsgi-webapp.service
+cd /etc/systemd/system
+sudo ln -s /usr/share/nginx/html/site/webapp/uwsgi-webapp.service uwsgi-webapp.service
+sudo systemctl stop uwsgi-webapp
+systemctl status uwsgi-webapp
+sudo systemctl start uwsgi-webapp
+
+#SELinuxの設定
+sudo setenforce 0
+
+#再起動
+sudo systemctl restart uwsgi-webapp
+
+
+/usr/share/nginx/html
+	site
+		webapp				#rootディレクトリ
+			uwsgi-webapp.service
+			uwsgi.ini
+			DrProject		#プロジェクト
+				static		#静的ファイル
+				DrProject	#django のプロジェクト内共通設定など
+				polls		
+
+
+  var/
+    www/
+      webapppackage/           ← デプロイ先ディレクトリ
+        uwsgi-webapp.service   ← systemctl コマンドで WSGI サーバーを操作するためのサービス設定ファイル
+        uwsgi.ini              ← Web アプリケーションを WSGI サーバーとして起動する際に指定する設定ファイル
+        venv/                  ← 本番環境用の venv を格納するディレクトリ
+        webapp/                ← django のプロジェクトルート
+          main/
+          static/
+          webapp/
+
+
+
