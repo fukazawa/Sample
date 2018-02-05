@@ -77,5 +77,26 @@ sudo systemctl restart uwsgi-webapp
           static/
           webapp/
 
+#ÄŠJ
+sudo systemctl daemon-reload
 
+sudo systemctl restart uwsgi-webapp
+sudo systemctl reload nginx
+
+
+#HTTPS
+cd /etc/pki/tls/certs
+sudo make dr-server.key
+sudo make dr-server.csr
+sudo openssl rsa -in dr-server.key -out dr-server.nopass.key
+sudo chmod 400 ./dr-server.nopass.key
+# ƒIƒŒƒIƒŒ sudo make test.crt
+/etc/pki/tls/certs/test.crt
+/etc/pki/tls/certs/test.key
+sudo openssl rsa -in test.key -out test.nopass.key
+/etc/pki/tls/certs/test.nopass.key
+
+
+/etc/nginx/conf.d/example.conf
+/usr/share/nginx/html/site/webapp/uwsgi-webapp.service
 
