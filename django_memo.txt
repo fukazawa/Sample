@@ -97,6 +97,4 @@ sudo openssl rsa -in test.key -out test.nopass.key
 /etc/pki/tls/certs/test.nopass.key
 
 
-/etc/nginx/conf.d/example.conf
-/usr/share/nginx/html/site/webapp/uwsgi-webapp.service
 
