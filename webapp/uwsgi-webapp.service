@@ -2,7 +2,8 @@
 Description=uWSGI service for webapp
 
 [Service]
-ExecStart=/bin/bash -c 'source /usr/share/nginx/html/site/bin/activate; DJANGO_SETTINGS_MODULE=DrProject.settings; uwsgi --ini /usr/share/nginx/html/site/webapp/uwsgi.ini'
+ExecStartPre=/bin/bash -c 'mkdir -p /var/run/uwsgi.webapppackage; chown root:nginx /var/run/uwsgi.webapppackage; chmod g+w /var/run/uwsgi.webapppackage'
+ExecStart=/bin/bash -c 'source /usr/share/nginx/site/bin/activate; DJANGO_SETTINGS_MODULE=DrProject.settings; uwsgi --ini /usr/share/nginx/site/webapp/uwsgi.ini'
 
 [Install]
 WantedBy=multi-user.target
